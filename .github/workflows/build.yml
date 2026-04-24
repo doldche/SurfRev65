@@ -29,13 +29,18 @@ jobs:
       - name: Recolectar archivos
         shell: powershell
         run: |
-          New-Item -ItemType Directory -Force -Path ${{ github.workspace }}/out
-          Get-ChildItem -Recurse -Filter "*.vst3" ${{ github.workspace }}/build | ForEach-Object {
-            Copy-Item -Recurse $_.FullName ${{ github.workspace }}/out/
+          New-Item -ItemType Directory -Force -Path out
+          $vst3 = Get-ChildItem -Recurse -Filter "SURF REV-65.vst3" build | Select-Object -First 1
+          if ($vst3) {
+            Copy-Item -Recurse $vst3.FullName out/ -Force
+            Write-Host "VST3 copiado: $($vst3.FullName)"
           }
-          Get-ChildItem -Recurse -Filter "SURF REV-65.exe" ${{ github.workspace }}/build | ForEach-Object {
-            Copy-Item $_.FullName "${{ github.workspace }}/out/SURF_REV65.exe"
+          $exe = Get-ChildItem -Recurse -Filter "SURF REV-65.exe" build | Select-Object -First 1
+          if ($exe) {
+            Copy-Item $exe.FullName "out/SURF_REV65.exe" -Force
+            Write-Host "EXE copiado: $($exe.FullName)"
           }
+          Get-ChildItem -Recurse out
 
       - uses: actions/upload-artifact@v4
         with:
