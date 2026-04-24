@@ -7,33 +7,40 @@ on:
 
 jobs:
   build-windows:
-    name: Windows VST3 + Standalone
+    name: Windows VST3 + EXE
     runs-on: windows-latest
     steps:
       - uses: actions/checkout@v4
+
       - uses: lukka/get-cmake@latest
+
       - uses: actions/cache@v4
         with:
           path: build/_deps
-          key: juce-7.0.9-windows
-      - name: Configurar
+          key: juce-7.0.9-win
+
+      - name: Configurar CMake
         run: cmake -B build -G "Visual Studio 17 2022" -A x64
+
       - name: Compilar VST3
         run: cmake --build build --config Release --target SurfRev65_VST3 -j4
+
       - name: Compilar EXE
         run: cmake --build build --config Release --target SurfRev65_Standalone -j4
-      - name: Recolectar archivos
+
+      - name: Recolectar
         shell: powershell
         run: |
-          New-Item -ItemType Directory -Force -Path artifacts/windows
+          New-Item -ItemType Directory -Force -Path out
           Get-ChildItem -Recurse -Filter "*.vst3" build | ForEach-Object {
-            Copy-Item -Recurse $_.FullName artifacts/windows/
+            Copy-Item -Recurse $_.FullName out/
           }
           Get-ChildItem -Recurse -Filter "SURF REV-65.exe" build | ForEach-Object {
-            Copy-Item $_.FullName "artifacts/windows/SURF_REV65.exe"
+            Copy-Item $_.FullName "out/SURF_REV65.exe"
           }
+
       - uses: actions/upload-artifact@v4
         with:
           name: SURF-REV65-Windows
-          path: artifacts/windows/
+          path: out/
           retention-days: 30
