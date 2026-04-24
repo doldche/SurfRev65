@@ -48,7 +48,7 @@ private:
     juce::AudioBuffer<float> dry, wet;
 
     double   currentSR   = 44100.0;
-    int      currentBS   = 512;
+    int      currentBS   = 128;
     int      currentProgram = 0;
     Mode     currentMode = Spring;
     bool     needRebuild = false;
