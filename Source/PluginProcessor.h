@@ -45,13 +45,19 @@ private:
 
     juce::dsp::Convolution   convolver;
     juce::dsp::IIR::Filter<float> toneL, toneR, lcL, lcR;
+    juce::dsp::IIR::Filter<float> wetToneL, wetToneR;
     juce::AudioBuffer<float> dry, wet;
 
-    double   currentSR   = 44100.0;
-    int      currentBS   = 128;
+    double   currentSR      = 44100.0;
+    int      currentBS      = 128;
     int      currentProgram = 0;
-    Mode     currentMode = Spring;
-    bool     needRebuild = false;
+    Mode     currentMode    = Spring;
+    bool     needRebuild    = false;
+
+    // Pre-delay buffer
+    juce::AudioBuffer<float> preDelayBuf;
+    int preDelayWrite = 0;
+    int preDelaySamples = 0;
 
     std::atomic<float>* pReverb  = nullptr;
     std::atomic<float>* pTone    = nullptr;
@@ -62,6 +68,10 @@ private:
     std::atomic<float>* pBoost   = nullptr;
     std::atomic<float>* pLoCut   = nullptr;
     std::atomic<float>* pBypass  = nullptr;
+    // Nuevos parametros
+    std::atomic<float>* pDwell   = nullptr;
+    std::atomic<float>* pWetTone = nullptr;
+    std::atomic<float>* pMix     = nullptr;
 
     float tremPhase = 0.0f;
 
